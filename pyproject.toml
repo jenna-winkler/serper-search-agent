@@ -6,13 +6,16 @@ readme = "README.md"
 authors = [{ name = "IBM Corp." }]
 requires-python = ">=3.11,<4.0"
 dependencies = [
-    "acp-sdk>=0.13.0",
+    "beeai-sdk",
     "pyyaml>=6.0.2",
 ]
 
 [tool.ruff]
 line-length = 120
 target-version = "py311"
+
+[tool.uv.sources]
+beeai-sdk = { git = "https://github.com/i-am-bee/beeai-platform", subdirectory = "apps/beeai-sdk" }
 
 [project.scripts]
 server = "beeai_agents.agent:run"

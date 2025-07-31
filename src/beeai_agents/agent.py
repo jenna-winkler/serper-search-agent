@@ -1,25 +1,30 @@
 import os
-from collections.abc import AsyncGenerator
 
-
-from acp_sdk import Annotations, MessagePart, Metadata
-from acp_sdk.models import Message
-from acp_sdk.models.platform import PlatformUIAnnotation, PlatformUIType
-from acp_sdk.server import Context, RunYield, RunYieldResume, Server
+from a2a.types import (
+    AgentCapabilities,
+    Message,
+    TextPart,
+)
+from beeai_sdk.server import Server
+from beeai_sdk.server.context import Context
+from beeai_sdk.a2a.extensions import AgentDetail
 
 server = Server()
 
+SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
+
 @server.agent(
-    metadata=Metadata(
-        annotations=Annotations(
-            beeai_ui=PlatformUIAnnotation(ui_type=PlatformUIType.HANDSOFF)
-        )
+    default_input_modes=SUPPORTED_CONTENT_TYPES,
+    default_output_modes=SUPPORTED_CONTENT_TYPES,
+    details=AgentDetail(ui_type="chat"),
+    capabilities=AgentCapabilities(
+        streaming=True,
     )
 )
-async def example_agent(input: list[Message], context: Context) -> AsyncGenerator[RunYield, RunYieldResume]:
+async def example_agent(input: Message, context: Context):
     """Polite agent that greets the user"""
     hello_template: str = os.getenv("HELLO_TEMPLATE", "Ciao %s!")
-    yield MessagePart(content=hello_template % str(input[-1]))
+    yield TextPart(text=hello_template % str(input.parts[0].content))
 
 
 def run():

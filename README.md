@@ -4,7 +4,7 @@ This repository provides a template for creating a Python agent that can be used
 
 ## Overview
 
-BeeAI agents are Python-based services that can be run locally or deployed to the BeeAI Platform. Each agent exposes specific functionality through the ACP (Agent Communication Protocol) which is implemented via SDK.
+BeeAI agents are Python-based services that can be run locally or deployed to the BeeAI Platform. Each agent exposes specific functionality through the [A2A (Agent2Agent Protocol)](https://github.com/a2aproject/A2A) which is implemented via SDK.
 
 In this template, you'll find:
 - A basic agent implementation
@@ -48,55 +48,54 @@ Here's an example of the included template agent:
 
 ```py
 @server.agent(
-    metadata=Metadata(
-        annotations=Annotations(
-            beeai_ui=PlatformUIAnnotation(ui_type=PlatformUIType.HANDSOFF)
-        )
+    default_input_modes=SUPPORTED_CONTENT_TYPES,
+    default_output_modes=SUPPORTED_CONTENT_TYPES,
+    details=AgentDetail(ui_type="chat"),
+    capabilities=AgentCapabilities(
+        streaming=True,
     )
 )
-async def example_agent(input: list[Message], context: Context) -> AsyncGenerator[RunYield, RunYieldResume]:
+async def example_agent(input: Message, context: Context):
     """Polite agent that greets the user"""
     hello_template: str = os.getenv("HELLO_TEMPLATE", "Ciao %s!")
-    yield MessagePart(content=hello_template % str(input[-1]))
+    yield TextPart(content=hello_template % str(input.parts[0].content))
 ```
 
 Modify this file to implement your own agent's logic. Here are some key points to consider when creating your agent:
-- The function name (example_agent above) is used as the unique id for the agent in the platform. You can override this in the metadata.
-- The docstring is used as the agent's description in the platform UI. You can also override this in the metadata.
+- The function name (example_agent above) is used as the unique id for the agent in the platform. You can override this in the `details`.
+- The docstring is used as the agent's description in the platform UI. You can also override this in the `details`.
 - The `@server.agent()` decorator registers your function as an agent and can customize its appearance and behavior
-- Your agent receives messages in the `input` list, with the most recent message at the end
-- Return responses using `yield MessagePart(content="text")` or even simply `yield "text"`
+- Your agent receives A2A message in the `input`
+- Return responses using `yield TextPart(text="text")` or simply `yield "Text"`
 - Access conversation context through the `context` parameter
 
-> [!TIP]
-> You can define multiple agents in the same service by creating additional decorated functions.
+### 🖥️ Enhancing the User Experience with `AgentDetail`
 
-### 🖥️ Enhancing the User Experience with `PlatformUIAnnotation`
+The BeeAI Platform SDK leverages A2A extensions to enhance the functionality of your agents; For example, how they are visualized in the platform UI.
+
+When using the `server.agent` decorator, you can specify `details`, which the SDK converts into an `AgentDetailExtension`. This extension is automatically added to your agent and allows you to configure UI-related elements such as the agent’s description, display name, and more.
 
 To create the most engaging and helpful interface for your users, define the following metadata in your agent decorator. This information shapes how your agent is presented in the GUI.
 
 ```py
 @server.agent(
-    name="chat",
-    description=(
-        "Conversational agent with memory, supporting real-time search, "
-        "Wikipedia lookups, and weather updates through integrated tools"
-    ),
-    metadata=Metadata(
-        annotations=Annotations(
-            beeai_ui=PlatformUIAnnotation(
-                ui_type=PlatformUIType.CHAT,
-                display_name="Chat Agent",
-                user_greeting="Hello! I'm your AI assistant. How can I help you today?",
-                tools=[
-                    AgentToolInfo(name="Weather", description=""),
-                    AgentToolInfo(name="Wikipedia", description=""),
-                    AgentToolInfo(
-                        name="Google Search", description=""
-                    ),
-                ]
-            )
+    default_input_modes=SUPPORTED_CONTENT_TYPES,
+    default_output_modes=SUPPORTED_CONTENT_TYPES,
+    details=AgentDetail(
+        ui_type=PlatformUIType.CHAT,
+        display_name="Chat Agent",
+        description=(
+            "Conversational agent with memory, supporting real-time search, "
+            "Wikipedia lookups, and weather updates through integrated tools"
         ),
+        user_greeting="Hello! I'm your AI assistant. How can I help you today?",
+        tools=[
+            AgentToolInfo(name="Weather", description=""),
+            AgentToolInfo(name="Wikipedia", description=""),
+            AgentToolInfo(
+                name="Google Search", description=""
+            ),
+        ],
         framework="BeeAI",
         recommended_models=["llama3.3:70b-instruct-fp16"],
         author={
@@ -104,12 +103,15 @@ To create the most engaging and helpful interface for your users, define the fol
             "email": "jsmith@example.com",
             "url": "https://example.com"
         }
+    ),
+    capabilities=AgentCapabilities(
+        streaming=True,
     )
 )
 ```
 
 >[!Note]
->The example above highlights the components that directly impact the **GUI experience**. For the complete metadata specification, see the [ACP Agent Detail](https://agentcommunicationprotocol.dev/core-concepts/agent-detail) documentation.
+>The example above highlights the components that directly impact the **GUI experience**. For the complete metadata specification, see the [BeeAI SDK](TODO) documentation.
 
 4. **Update project metadata and dependencies** in the `pyproject.toml` file. After updating, synchronize with `uv sync`.
 
@@ -125,13 +127,15 @@ uv run server
 This will start a local http server on http://127.0.0.1:8000 by default. You'll get an output similar to:
 
 ```
-INFO:     Started server process [86448]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO     | uvicorn.error | Started server process [83016]
+INFO     | uvicorn.error | Waiting for application startup.
+INFO     | beeai_sdk    | Registering agent to the beeai platform
+INFO     | uvicorn.error | Application startup complete.
+INFO     | uvicorn.error | Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO     | beeai_sdk    | Agent registered successfully
 ```
 
-Your agents should now be started on http://localhost:8000. You can verify your agents are running with the BeeAI CLI:
+Your agents should now be started on http://127.0.0.1:8000. You can verify your agents are running with the BeeAI CLI:
 
 ```sh
 # List available agents
