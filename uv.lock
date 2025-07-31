@@ -221,7 +221,7 @@ wikipedia = [
 [[package]]
 name = "beeai-sdk"
 version = "0.1.0"
-source = { git = "https://github.com/i-am-bee/beeai-platform?subdirectory=apps%2Fbeeai-sdk#3b2e7fcc1dd973331f39c77331fbcbe77bb48345" }
+source = { git = "https://github.com/i-am-bee/beeai-platform?subdirectory=apps%2Fbeeai-sdk#e94011cf4437e7dd1c0f411f7e7eb3df0793ca78" }
 dependencies = [
     { name = "a2a-sdk" },
     { name = "anyio" },

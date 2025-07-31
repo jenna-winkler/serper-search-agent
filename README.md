@@ -58,15 +58,16 @@ Here's an example of the included template agent:
 async def example_agent(input: Message, context: Context):
     """Polite agent that greets the user"""
     hello_template: str = os.getenv("HELLO_TEMPLATE", "Ciao %s!")
-    yield TextPart(content=hello_template % str(input.parts[0].content))
+    yield hello_template % get_message_text(input)
 ```
 
 Modify this file to implement your own agent's logic. Here are some key points to consider when creating your agent:
 - The function name (example_agent above) is used as the unique id for the agent in the platform. You can override this in the `details`.
 - The docstring is used as the agent's description in the platform UI. You can also override this in the `details`.
 - The `@server.agent()` decorator registers your function as an agent and can customize its appearance and behavior
+- `get_message_text` is exposed from `a2a.utils.message` to simplify text message extraction
 - Your agent receives A2A message in the `input`
-- Return responses using `yield TextPart(text="text")` or simply `yield "Text"`
+- Return responses using `yield AgentMessage` or simply `yield "some string"`
 - Access conversation context through the `context` parameter
 
 ### 🖥️ Enhancing the User Experience with `AgentDetail`
