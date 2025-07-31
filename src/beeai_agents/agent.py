@@ -12,12 +12,8 @@ from beeai_sdk.a2a.extensions import AgentDetail
 
 server = Server()
 
-SUPPORTED_CONTENT_TYPES = ["text", "text/plain"]
-
 @server.agent(
-    default_input_modes=SUPPORTED_CONTENT_TYPES,
-    default_output_modes=SUPPORTED_CONTENT_TYPES,
-    detail=AgentDetail(ui_type="chat"),
+    detail=AgentDetail(ui_type="hands-off"),
     capabilities=AgentCapabilities(
         streaming=True,
     )
