@@ -1,23 +1,16 @@
 import os
 
 from a2a.types import (
-    AgentCapabilities,
     Message,
 )
 from a2a.utils.message import get_message_text
 from beeai_sdk.server import Server
 from beeai_sdk.server.context import Context
 from beeai_sdk.a2a.types import AgentMessage
-from beeai_sdk.a2a.extensions import AgentDetail
 
 server = Server()
 
-@server.agent(
-    detail=AgentDetail(ui_type="hands-off"),
-    capabilities=AgentCapabilities(
-        streaming=True,
-    )
-)
+@server.agent()
 async def example_agent(input: Message, context: Context):
     """Polite agent that greets the user"""
     hello_template: str = os.getenv("HELLO_TEMPLATE", "Ciao %s!")

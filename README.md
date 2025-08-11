@@ -47,14 +47,7 @@ In this template, you'll find:
 Here's an example of the included template agent:
 
 ```py
-@server.agent(
-    default_input_modes=SUPPORTED_CONTENT_TYPES,
-    default_output_modes=SUPPORTED_CONTENT_TYPES,
-    details=AgentDetail(ui_type="chat"),
-    capabilities=AgentCapabilities(
-        streaming=True,
-    )
-)
+@server.agent()
 async def example_agent(input: Message, context: Context):
     """Polite agent that greets the user"""
     hello_template: str = os.getenv("HELLO_TEMPLATE", "Ciao %s!")
