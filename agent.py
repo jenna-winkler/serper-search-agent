@@ -99,7 +99,7 @@ async def secrets_agent(
     input: Message,
     secrets: Annotated[
         SecretsExtensionServer,
-        SecretsExtensionSpec.single_demand(name="Serper API Key", description="Serper API key"),
+        SecretsExtensionSpec.single_demand(key="SERPER_API_KEY", name="Serper API Key", description="Serper API key"),
     ],
     trajectory: Annotated[TrajectoryExtensionServer, TrajectoryExtensionSpec()],
     citation: Annotated[CitationExtensionServer, CitationExtensionSpec()],
