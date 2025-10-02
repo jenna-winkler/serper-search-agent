@@ -1,48 +1,48 @@
 # Serper Search Agent
 
-A demonstration of runtime secrets management and intelligent search using BeeAI Framework + SDK.
+This project demonstrates the BeeAI Platform's runtime secrets feature - how agents can securely request API keys and credentials at runtime instead of requiring pre-configuration.
 
-## What It Showcases
+## What It Does
 
-**1. Runtime Secrets (BeeAI SDK)**
-- Requests Serper API key at runtime instead of pre-configuration
-- Uses `SecretsExtensionServer` to prompt users for credentials
-- Handles both pre-configured and dynamic secret provisioning
+**Runtime Secrets (Main Feature)**
+- Agent asks for your Serper API key the first time you use it
+- Secure credential prompt through the platform UI
+- Works with both pre-configured secrets and on-demand requests
 
-**2. RequirementAgent Intelligence (BeeAI Framework)**
-- Converts natural language ("tell me about the sky") into search queries ("facts about the sky")
-- Performs multiple refined searches automatically
-- No hard-coded search logic - agent decides when/how to search
+**Smart Search with RequirementAgent**
+- Converts conversational questions into search queries automatically
+- "tell me about the sky" becomes "facts about the sky"
+- Refines searches on its own if needed
 
-**3. Custom Tool Implementation**
-- Production-ready `SerperSearchTool` following BeeAI patterns
-- Proper input/output schemas with Pydantic
-- Async HTTP integration with error handling
+**Custom Serper Tool**
+- Production-ready implementation with proper schemas
+- Async HTTP with error handling
+- Follows BeeAI Framework patterns
 
-**4. Citation Metadata (BeeAI SDK)**
-- Structured citations with `start_index`/`end_index` for UI highlighting
-- Clickable source attribution in BeeAI Platform
-- Proper markdown formatting
-
-**5. Trajectory Logging (BeeAI SDK)**
-- Logs extracted search queries: `"Query: 'facts about the sky'"`
-- Tracks multiple search attempts
-- Full execution transparency
-
-**6. Agent Registration (BeeAI SDK)**
-- Rich metadata for platform discoverability
-- Multi-turn interaction mode
-- Skills and example queries
+**Citations & Transparency**
+- Clickable sources with position metadata for UI highlighting
+- Trajectory logs show extracted queries: `"Query: 'facts about the sky'"`
+- Full execution visibility for debugging
 
 ## Run It
 
-Prerequisites:
-- [BeeAI Platform](https://docs.beeai.dev/introduction/quickstart) installed and running
-- Serper API key from [https://serper.dev](https://serper.dev)
+**Prerequisites:**
+- [BeeAI Platform](https://docs.beeai.dev/introduction/quickstart) running locally
+- [Serper API key](https://serper.dev)
 
 ```bash
 pip install beeai-framework beeai-sdk httpx pydantic
 python serper_agent.py
 ```
 
-Access at `http://localhost:8334/` via BeeAI Platform. Provide your Serper API key when prompted.
+Open `http://localhost:8334` and try asking something. The agent will prompt you for your API key - that's the runtime secrets feature in action.
+
+## Code Highlights
+
+- `SecretsExtensionServer` - Handles the runtime credential flow
+- `RequirementAgent` - Powers intelligent query extraction
+- `SerperSearchTool` - Custom tool following BeeAI patterns
+- `CitationExtensionServer` - Structured source attribution
+- `TrajectoryExtensionServer` - Execution logging
+
+This is a reference implementation for building agents that need secure credential management.
