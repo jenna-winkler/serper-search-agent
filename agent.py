@@ -121,17 +121,17 @@ async def secrets_agent(
     
     api_key = None
     if secrets and secrets.data and secrets.data.secret_fulfillments:
-        api_key = secrets.data.secret_fulfillments['default'].secret
+        api_key = secrets.data.secret_fulfillments['SERPER_API_KEY'].secret
         yield trajectory.trajectory_metadata(title="API Key", content="Using pre-configured Serper API key")
     else:
         yield trajectory.trajectory_metadata(title="API Key", content="Requesting Serper API key from user")
         runtime_provided_secrets = await secrets.request_secrets(
             params=SecretsServiceExtensionParams(
-                secret_demands={"default": SecretDemand(description="Serper API key", name="Serper API Key")}
+                secret_demands={"SERPER_API_KEY": SecretDemand(description="Serper API key", name="Serper API Key")}
             )
         )
         if runtime_provided_secrets and runtime_provided_secrets.secret_fulfillments:
-            api_key = runtime_provided_secrets.secret_fulfillments['default'].secret
+            api_key = runtime_provided_secrets.secret_fulfillments['SERPER_API_KEY'].secret
             yield trajectory.trajectory_metadata(title="API Key", content="Received API key from user")
     
     if not api_key:
