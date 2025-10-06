@@ -74,7 +74,10 @@ uv run server
 ```
 
 > [!TIP]
-> If you want the server to auto-restart on code changes, use this command instead: `uv run watchfiles beeai_agents.agent.run`
+> If you want the server to auto-restart on code changes, use this command instead:
+> ```sh
+> uv run watchfiles beeai_agents.agent.run
+> ```
 
 This will start a local http server on http://127.0.0.1:8000 by default. You'll get an output similar to:
 
