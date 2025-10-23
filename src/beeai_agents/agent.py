@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from a2a.types import AgentSkill, Message
 
 from beeai_framework.backend import ChatModel
-from beeai_framework.agents.experimental import RequirementAgent
+from beeai_framework.agents.requirement import RequirementAgent
 from beeai_framework.tools import Tool, ToolRunOptions, JSONToolOutput
 from beeai_framework.context import RunContext
 from beeai_framework.emitter import Emitter
