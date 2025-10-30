@@ -12,19 +12,19 @@ from beeai_framework.tools import Tool, ToolRunOptions, JSONToolOutput
 from beeai_framework.context import RunContext
 from beeai_framework.emitter import Emitter
 
-from beeai_sdk.a2a.extensions import (
+from agentstack_sdk.a2a.extensions import (
     AgentDetail, AgentDetailTool, 
     CitationExtensionServer, CitationExtensionSpec, 
     TrajectoryExtensionServer, TrajectoryExtensionSpec, 
     LLMServiceExtensionServer, LLMServiceExtensionSpec
 )
-from beeai_sdk.a2a.extensions.auth.secrets import (
+from agentstack_sdk.a2a.extensions.auth.secrets import (
     SecretDemand,
     SecretsExtensionServer,
     SecretsExtensionSpec,
     SecretsServiceExtensionParams,
 )
-from beeai_sdk.server import Server
+from agentstack_sdk.server import Server
 
 server = Server()
 
@@ -69,7 +69,7 @@ class SerperSearchTool(Tool[SerperSearchToolInput, ToolRunOptions, JSONToolOutpu
                 description="Intelligent web search powered by Google via Serper API. Automatically extracts optimal search terms from conversational queries."
             )
         ],
-        framework="BeeAI",
+        framework="BeeAI Framework",
         author={
             "name": "Jenna Winkler"
         },
