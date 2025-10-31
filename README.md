@@ -1,48 +1,67 @@
 # Serper Search Agent
 
-This project demonstrates Agent Stack's runtime secrets feature - how agents can securely request API keys and credentials at runtime instead of requiring pre-configuration.
+This project shows how Agent Stack’s runtime secrets work — letting agents securely request API keys or credentials at runtime instead of needing them pre-configured.
+
+---
 
 ## What It Does
 
-**Runtime Secrets (Main Feature)**
-- Agent asks for your Serper API key the first time you use it
-- Secure credential prompt through the platform UI
-- Works with both pre-configured secrets and on-demand requests
+**Runtime Secrets**
 
-**Smart Search with RequirementAgent**
-- Converts conversational questions into search queries automatically
-- "tell me about the sky" becomes "facts about the sky"
-- Refines searches on its own if needed
+* Prompts you for your Serper API key the first time you use it
+* Uses the platform’s secure credential UI
+* Supports both pre-set and on-demand secrets
+
+**Smart Search**
+
+* Turns natural questions into search queries automatically
+* Example: “tell me about the sky” → “facts about the sky”
+* Refines searches when needed
 
 **Custom Serper Tool**
-- Production-ready implementation with proper schemas
-- Async HTTP with error handling
-- Follows BeeAI Framework patterns
 
-**Citations & Transparency**
-- Clickable sources with position metadata for UI highlighting
-- Trajectory logs show extracted queries: `"Query: 'facts about the sky'"`
-- Full execution visibility for debugging
+* Async HTTP with error handling
+* Proper schemas and BeeAI Framework patterns
+
+**Citations & Logs**
+
+* Clickable sources with metadata for highlighting in the UI
+* Query traces like `Query: 'facts about the sky'`
+* Full execution visibility
+
+---
 
 ## Run It
 
-**Prerequisites:**
-- [Agent Stack](https://docs.beeai.dev/introduction/quickstart) running locally
-- [Serper API key](https://serper.dev)
+**Requirements**
+
+* [Agent Stack](https://docs.beeai.dev/introduction/quickstart) running locally
+* [Serper API key](https://serper.dev)
+
+### Using `uv` (recommended)
+
+This project uses a `pyproject.toml` — not a `requirements.txt` — so `uv` is the easiest way to install dependencies.
 
 ```bash
-pip install beeai-framework beeai-sdk httpx pydantic
-python serper_agent.py
+git clone https://github.com/jenna-winkler/serper-search-agent
+cd serper-search-agent
+
+uv venv
+source .venv/bin/activate
+uv sync
+uv run server
 ```
 
-Open `http://localhost:8334` and try asking something. The agent will prompt you for your API key - that's the runtime secrets feature in action.
+Then open [http://localhost:8334](http://localhost:8334).
+
+You’ll be prompted for your API key — that’s the runtime secrets feature in action.
+
+---
 
 ## Code Highlights
 
-- `SecretsExtensionServer` - Handles the runtime credential flow
-- `RequirementAgent` - Powers intelligent query extraction
-- `SerperSearchTool` - Custom tool
-- `CitationExtensionServer` - Structured source attribution
-- `TrajectoryExtensionServer` - Execution logging
-
-This is a reference implementation for building agents that need secure credential management.
+* `SecretsExtensionServer` — runtime credential flow
+* `RequirementAgent` — query extraction
+* `SerperSearchTool` — custom tool
+* `CitationExtensionServer` — source attribution
+* `TrajectoryExtensionServer` — execution logs
