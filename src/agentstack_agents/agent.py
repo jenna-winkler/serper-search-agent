@@ -103,7 +103,12 @@ async def secrets_agent(
     ],
     trajectory: Annotated[TrajectoryExtensionServer, TrajectoryExtensionSpec()],
     citation: Annotated[CitationExtensionServer, CitationExtensionSpec()],
-    llm: Annotated[LLMServiceExtensionServer, LLMServiceExtensionSpec.single_demand(suggested=("ibm-granite/granite-3.3-8b-instruct",)],
+    llm: Annotated[
+        LLMServiceExtensionServer, 
+        LLMServiceExtensionSpec.single_demand(
+            suggested=("ibm-granite/granite-3.3-8b-instruct",)
+        )
+    ],
 ):
     """Agent demonstrating runtime secrets with Serper API"""
     
