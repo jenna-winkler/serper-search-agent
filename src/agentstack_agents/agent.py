@@ -106,7 +106,7 @@ async def secrets_agent(
     llm: Annotated[
         LLMServiceExtensionServer, 
         LLMServiceExtensionSpec.single_demand(
-            suggested=("ibm-granite/granite-4.0-h-small",)
+            suggested=("meta-llama/llama-3-3-70b-instruct",)
         )
     ],
 ):
