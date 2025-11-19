@@ -113,7 +113,7 @@ async def serper_search_agent(
     llm: Annotated[
         LLMServiceExtensionServer, 
         LLMServiceExtensionSpec.single_demand(
-            suggested=("ibm-granite/granite-4.0-h-micro",)
+            suggested=("ibm-granite/granite-4.0-h-small",)
         )
     ],
 ):
