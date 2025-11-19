@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 from a2a.types import AgentSkill, Message
 
-from beeai_framework.adapters.openai import OpenAIChatModel
+from beeai_framework.adapters.agentstack.backend.chat import AgentStackChatModel
 from beeai_framework.backend.types import ChatModelParameters
 from beeai_framework.agents.requirement import RequirementAgent
 from beeai_framework.agents.requirement.events import RequirementAgentFinalAnswerEvent
@@ -162,19 +162,11 @@ async def serper_search_agent(
         if not llm_config:
             raise ValueError("No LLM fulfillment available")
 
-        llm_model = OpenAIChatModel(
-            model_id=llm_config.api_model,
-            base_url=llm_config.api_base,
-            api_key=llm_config.api_key,
-            parameters=ChatModelParameters(
-                temperature=0.0,
-                stream=True  # Enable streaming
-            ),
-            tool_choice_support=set()
-        )
+        llm_client = AgentStackChatModel(parameters=ChatModelParameters(stream=True))
+        llm_client.set_context(llm)
         
         agent = RequirementAgent(
-            llm=llm_model,
+            llm=llm_client,
             tools=[SerperSearchTool(api_key)],
             instructions=dedent("""\
                 Use serper_search to find information. Extract key search terms from the user's query.
