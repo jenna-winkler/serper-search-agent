@@ -6,7 +6,8 @@ from pydantic import BaseModel, Field
 
 from a2a.types import AgentSkill, Message
 
-from beeai_framework.backend import ChatModel
+from beeai_framework.adapters.openai import OpenAIChatModel
+from beeai_framework.backend.types import ChatModelParameters
 from beeai_framework.agents.requirement import RequirementAgent
 from beeai_framework.tools import Tool, ToolRunOptions, JSONToolOutput
 from beeai_framework.context import RunContext
@@ -95,7 +96,7 @@ class SerperSearchTool(Tool[SerperSearchToolInput, ToolRunOptions, JSONToolOutpu
         )
     ],
 )
-async def secrets_agent(
+async def serper_search_agent(
     input: Message,
     secrets: Annotated[
         SecretsExtensionServer,
@@ -106,7 +107,7 @@ async def secrets_agent(
     llm: Annotated[
         LLMServiceExtensionServer, 
         LLMServiceExtensionSpec.single_demand(
-            suggested=("meta-llama/llama-3-3-70b-instruct",)
+            suggested=("ibm-granite/granite-4.0-h-micro",)
         )
     ],
 ):
@@ -146,7 +147,23 @@ async def secrets_agent(
     yield trajectory.trajectory_metadata(title="Agent Setup", content="Initializing RequirementAgent with Serper search")
     
     try:
-        llm_model = ChatModel.from_name("ollama:granite3.3:8b")
+        if not llm or not llm.data:
+            raise ValueError("LLM service extension is required but not available")
+
+        llm_config = llm.data.llm_fulfillments.get("default")
+        if not llm_config:
+            raise ValueError("No LLM fulfillment available")
+
+        llm_model = OpenAIChatModel(
+            model_id=llm_config.api_model,
+            base_url=llm_config.api_base,
+            api_key=llm_config.api_key,
+            parameters=ChatModelParameters(
+                temperature=0.0,
+                stream=False
+            ),
+            tool_choice_support=set()
+        )
         agent = RequirementAgent(
             llm=llm_model,
             tools=[SerperSearchTool(api_key)],
@@ -157,7 +174,7 @@ async def secrets_agent(
         search_count = 0
         
         async for event, meta in agent.run(user_query):
-            if meta.name == "success" and event.state.steps:
+            if meta and meta.name == "success" and event.state.steps:
                 step = event.state.steps[-1]
                 
                 if step.tool and step.tool.name == "serper_search":
