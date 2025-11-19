@@ -192,7 +192,6 @@ async def serper_search_agent(
                 response_text += data.delta
         
         async for event, meta in agent.run(user_query).on("final_answer", handle_final_answer_stream):
-            # Handle streaming final answer
             if meta.name == "final_answer":
                 if isinstance(event, RequirementAgentFinalAnswerEvent) and event.delta:
                     clean_text, new_citations = citation_parser.process_chunk(event.delta)
@@ -202,7 +201,6 @@ async def serper_search_agent(
                         yield citation.citation_metadata(citations=new_citations)
                 continue
             
-            # Handle tool execution
             if meta.name == "success" and event.state.steps:
                 step = event.state.steps[-1]
                 
@@ -224,11 +222,9 @@ async def serper_search_agent(
                             content=f"Found {num_results} results"
                         )
         
-        # Finalize any remaining text
         if final_text := citation_parser.finalize():
             yield final_text
         
-        # Store message with citations
         if citation_parser.citations:
             yield trajectory.trajectory_metadata(
                 title="Complete", 
